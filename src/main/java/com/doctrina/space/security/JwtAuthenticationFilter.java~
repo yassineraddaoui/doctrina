@@ -1,0 +1,4 @@
+package com.doctrina.space.security;
+
+public class JwtAuthenticationFilter {
+}
