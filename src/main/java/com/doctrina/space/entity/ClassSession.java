@@ -1,12 +1,14 @@
 package com.doctrina.space.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "class_sessions")
+@Data
 public class ClassSession {
 
     @Id
@@ -14,7 +16,7 @@ public class ClassSession {
     private Long id;
 
     private String title;
-    private LocalDateTime startAt;
+    private LocalDateTime startedAt;
     private int durationMinutes;
     private boolean online;
 
@@ -34,36 +36,67 @@ public class ClassSession {
     @JoinColumn(name = "room_id")
     private Room room;
 
-    public ClassSession() {}
+    public Long getId() {
+        return id;
+    }
 
-    public ClassSession(LocalDateTime startAt, boolean online, Account teacher) {
-        this.startAt = startAt;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public LocalDateTime getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
         this.online = online;
+    }
+
+    public int getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(int durationMinutes) {
+        this.durationMinutes = durationMinutes;
+    }
+
+    public Account getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Account teacher) {
         this.teacher = teacher;
     }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Room getRoom() {
+        return room;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setRoom(Room room) {
+        this.room = room;
+    }
 
-    public LocalDateTime getStartAt() { return startAt; }
-    public void setStartAt(LocalDateTime startAt) { this.startAt = startAt; }
+    public Set<Account> getStudents() {
+        return students;
+    }
 
-    public int getDurationMinutes() { return durationMinutes; }
-    public void setDurationMinutes(int durationMinutes) { this.durationMinutes = durationMinutes; }
-
-    public boolean isOnline() { return online; }
-    public void setOnline(boolean online) { this.online = online; }
-
-    public Account getTeacher() { return teacher; }
-    public void setTeacher(Account teacher) { this.teacher = teacher; }
-
-    public Set<Account> getStudents() { return students; }
-    public void setStudents(Set<Account> students) { this.students = students; }
-
-    public Room getRoom() { return room; }
-    public void setRoom(Room room) { this.room = room; }
+    public void setStudents(Set<Account> students) {
+        this.students = students;
+    }
 }

@@ -6,6 +6,7 @@ import com.doctrina.space.entity.Account;
 import com.doctrina.space.security.JwtTokenProvider;
 import com.doctrina.space.services.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,11 +17,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthController {
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtProvider;
-    private final AccountService accountService;
+    @Autowired
+    private  AuthenticationManager authenticationManager;
+    @Autowired
+    private  JwtTokenProvider jwtProvider;
+    @Autowired
+    private  AccountService accountService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
@@ -35,16 +38,4 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
-        try {
-            Account a = accountService.registerWithToken(
-                    req.getToken(), req.getFullName(), req.getEmail(), req.getPassword()
-            );
-            a.setPassword(null);
-            return ResponseEntity.ok(a);
-        } catch (RuntimeException ex) {
-            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
-        }
-    }
 }

@@ -4,6 +4,7 @@ import com.doctrina.space.dto.ClassSessionDto;
 import com.doctrina.space.entity.ClassSession;
 import com.doctrina.space.services.ClassSessionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +15,9 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/sessions")
-@RequiredArgsConstructor
 public class ClassSessionController {
-    private final ClassSessionService sessionService;
+@Autowired
+    private  ClassSessionService sessionService;
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody ClassSessionDto dto) {

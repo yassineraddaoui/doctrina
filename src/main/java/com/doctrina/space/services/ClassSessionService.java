@@ -4,6 +4,7 @@ import com.doctrina.space.entity.*;
 import com.doctrina.space.entity.enums.RoleType;
 import com.doctrina.space.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -14,18 +15,21 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 public class ClassSessionService {
-    private final ClassSessionRepository sessionRepo;
-    private final RoomRepository roomRepo;
-    private final AccountRepository accountRepo;
+    @Autowired
+    private  ClassSessionRepository sessionRepo;
+    @Autowired
+    private  RoomRepository roomRepo;
+    @Autowired
+    private
+    AccountRepository accountRepo;
 
     // room availability check (overlap)
     public boolean isRoomAvailable(Room room, LocalDateTime startAt, int durationMinutes) {
         LocalDateTime end = startAt.plus(durationMinutes, ChronoUnit.MINUTES);
         List<ClassSession> sessions = sessionRepo.findByRoomId(room.getId());
         for (ClassSession s : sessions) {
-            LocalDateTime sStart = s.getStartAt();
+            LocalDateTime sStart = s.getStartedAt();
             LocalDateTime sEnd = sStart.plus(s.getDurationMinutes(), ChronoUnit.MINUTES);
             if (startAt.isBefore(sEnd) && sStart.isBefore(end)) {
                 return false;
@@ -44,11 +48,11 @@ public class ClassSessionService {
                                       Long roomId) {
 
         Account teacher = accountRepo.findById(teacherId).orElseThrow(() -> new RuntimeException("Teacher not found"));
-        if (teacher.getRole() != RoleType.PROF) throw new RuntimeException("Account is not a teacher");
+        if (teacher.getRole() != RoleType.TEACHER) throw new RuntimeException("Account is not a teacher");
 
         ClassSession s = new ClassSession();
         s.setTitle(title);
-        s.setStartAt(startAt);
+        s.setStartedAt(startAt);
         s.setDurationMinutes(durationMinutes);
         s.setOnline(online);
         s.setTeacher(teacher);

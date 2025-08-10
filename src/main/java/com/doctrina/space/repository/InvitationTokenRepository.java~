@@ -1,4 +1,0 @@
-package com.doctrina.space.repository;
-
-public class InvitationTokenRepository {
-}
