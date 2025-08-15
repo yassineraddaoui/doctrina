@@ -7,50 +7,52 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import com.doctrina.space.entity.enums.RoleType;
-import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-
 public class Account {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String fullName;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RoleType role;
 
-    @OneToMany(mappedBy = "teacher")
-     private Set<ClassSession> teachingSessions = new HashSet<>();
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ClassSession> teachingSessions = new HashSet<>();
 
-    @ManyToMany(mappedBy = "students")
-     private Set<ClassSession> attendingSessions = new HashSet<>();
+    @ManyToMany(mappedBy = "students", cascade = CascadeType.ALL)
+    private Set<ClassSession> attendingSessions = new HashSet<>();
+
+    @Column(name = "invitation_token")
     private String invitationToken;
+
+    @Column(name = "invitation_at")
     private Date invitationAt;
 
-    public Account(InvitationRequest req,String token) {
-        email = req.getEmail();
-        role = req.getRole();
-        invitationToken=token;
-        invitationAt=new Date();
+    // No-argument constructor
+    public Account() {
     }
 
-    public String getPassword() {
-        return password;
+    // Constructor for invitation generation
+    public Account(InvitationRequest req, String token) {
+        this.email = req.getEmail();
+        this.role = req.getRole() != null ? req.getRole() : RoleType.TEACHER; // Default to TEACHER if null
+        this.invitationToken = token;
+        this.invitationAt = new Date();
+        // fullName and password are not set here; they should be provided during registration
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -75,20 +77,28 @@ public class Account {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public RoleType getRole() {
+        return role;
+    }
+
+    public void setRole(RoleType role) {
+        this.role = role;
+    }
+
     public Set<ClassSession> getTeachingSessions() {
         return teachingSessions;
     }
 
     public void setTeachingSessions(Set<ClassSession> teachingSessions) {
         this.teachingSessions = teachingSessions;
-    }
-
-    public String getInvitationToken() {
-        return invitationToken;
-    }
-
-    public void setInvitationToken(String invitationToken) {
-        this.invitationToken = invitationToken;
     }
 
     public Set<ClassSession> getAttendingSessions() {
@@ -99,12 +109,12 @@ public class Account {
         this.attendingSessions = attendingSessions;
     }
 
-    public RoleType getRole() {
-        return role;
+    public String getInvitationToken() {
+        return invitationToken;
     }
 
-    public void setRole(RoleType role) {
-        this.role = role;
+    public void setInvitationToken(String invitationToken) {
+        this.invitationToken = invitationToken;
     }
 
     public Date getInvitationAt() {

@@ -1,17 +1,20 @@
 package com.doctrina.space.dto;
 
 import com.doctrina.space.entity.enums.RoleType;
-import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class InvitationRequest {
     private RoleType role;
     private String email;
     private int daysValid = 1;
+
+    public InvitationRequest() {
+    }
+
+    public InvitationRequest(RoleType role, String email, int daysValid) {
+        this.role = role;
+        this.email = email;
+        this.daysValid = daysValid;
+    }
 
     public String getEmail() {
         return email;

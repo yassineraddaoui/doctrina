@@ -2,6 +2,7 @@ package com.doctrina.space.security;
 
 import com.doctrina.space.entity.Account;
 import com.doctrina.space.repository.AccountRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

@@ -1,0 +1,4 @@
+package com.doctrina.space.dto;
+
+public class UpdateUserRequest {
+}

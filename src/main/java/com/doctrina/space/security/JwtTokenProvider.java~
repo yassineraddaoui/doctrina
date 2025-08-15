@@ -2,7 +2,6 @@ package com.doctrina.space.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -12,11 +11,8 @@ import java.util.Map;
 
 @Component
 public class JwtTokenProvider {
-    @Value("${app.jwt.secret}")
-    private String SECRET_KEY;
-
-    @Value("${app.jwt.validityMillis}")
-    private long EXPIRATION_TIME;
+    private final String SECRET_KEY = "temporary-secret-key";
+    private final long EXPIRATION_TIME = 86400000; // 24 hours in milliseconds
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
@@ -39,7 +35,7 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            System.out.println("Token validation error: " + e.getMessage());
+            System.out.println("Token validation error: " + e.getMessage()); // Debug log
             return false;
         }
     }

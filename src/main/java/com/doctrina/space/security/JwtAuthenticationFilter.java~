@@ -27,11 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        String path = request.getServletPath();
-        if (path.equals("/api/auth/login")) {
-            chain.doFilter(request, response); // Skip filter for login
-            return;
-        }
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
@@ -43,9 +38,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    System.out.println("Authentication set for: " + email);
+                    System.out.println("Authentication set for: " + email); // Debug log
                 } else {
-                    System.out.println("Token validation failed for: " + email);
+                    System.out.println("Token validation failed for: " + email); // Debug log
                 }
             }
         }

@@ -3,6 +3,7 @@ package com.doctrina.space.services;
 import com.doctrina.space.entity.Account;
 import com.doctrina.space.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,11 +12,14 @@ import java.util.Optional;
 public class AccountService {
     @Autowired
     private AccountRepository accountRepo;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public void createAccount(Account account) {
         if (account.getPassword() != null && !account.getPassword().isEmpty()) {
-            System.out.println("Raw password for " + account.getEmail() + ": " + account.getPassword());
-            // Password is already hashed in the controller, so no need to re-hash here
+            String rawPassword = account.getPassword();
+            System.out.println("Raw password for " + account.getEmail() + ": " + rawPassword);
+            account.setPassword(rawPassword); // Store raw password for testing
         } else {
             System.out.println("Password is null or empty for " + account.getEmail());
         }
@@ -26,7 +30,7 @@ public class AccountService {
         return accountRepo.findByEmail(email);
     }
 
-    public void updateAccount(Account account) {
-        accountRepo.save(account); // Updates the existing record
+    public String hashPassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }

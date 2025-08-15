@@ -1,12 +1,9 @@
 package com.doctrina.space.dto;
 
-import com.doctrina.space.entity.enums.RoleType;
-
 public class RegisterRequest {
     private String fullName;
     private String email;
     private String password;
-    private RoleType role; // Add role field
 
     public RegisterRequest() {
     }
@@ -33,13 +30,5 @@ public class RegisterRequest {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public RoleType getRole() {
-        return role;
-    }
-
-    public void setRole(RoleType role) {
-        this.role = role;
     }
 }
