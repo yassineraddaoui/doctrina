@@ -84,6 +84,7 @@ public class AdminController {
 
 
     @DeleteMapping("/delete-user")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@RequestParam String email) {
         Account existingAccount = accountService.findByEmail(email)
                 .orElse(null);

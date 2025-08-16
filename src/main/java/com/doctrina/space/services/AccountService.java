@@ -15,7 +15,6 @@ public class AccountService {
     public void createAccount(Account account) {
         if (account.getPassword() != null && !account.getPassword().isEmpty()) {
             System.out.println("Raw password for " + account.getEmail() + ": " + account.getPassword());
-            // Password is already hashed in the controller, so no need to re-hash here
         } else {
             System.out.println("Password is null or empty for " + account.getEmail());
         }
@@ -27,6 +26,10 @@ public class AccountService {
     }
 
     public void updateAccount(Account account) {
-        accountRepo.save(account); // Updates the existing record
+        accountRepo.save(account);
+    }
+
+    public void deleteAccount(String email) {
+        accountRepo.deleteByEmail(email); // Assumes a custom query method
     }
 }
