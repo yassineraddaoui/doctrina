@@ -91,7 +91,7 @@ public class AdminController {
             return ResponseEntity.badRequest().body(Map.of("error", "User not found"));
         }
 
-        accountService.deleteAccount(email);
+        accountService.deleteAccount(existingAccount);
         return ResponseEntity.ok(Map.of("message", "User deleted successfully", "email", email));
     }
 

@@ -29,7 +29,7 @@ public class AccountService {
         accountRepo.save(account);
     }
 
-    public void deleteAccount(String email) {
-        accountRepo.deleteByEmail(email); // Assumes a custom query method
+    public void deleteAccount(Account account) {
+        accountRepo.delete(account); // Assumes a custom query method
     }
 }
