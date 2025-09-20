@@ -31,13 +31,6 @@ export default function ClassSessionsPage() {
       router.push('/login');
       return;
     }
-    
-    // Check if user is a teacher or admin
-    if (role !== 'TEACHER' && role !== 'ADMIN') {
-      console.log('User role not authorized, redirecting to doctrina');
-      router.push('/doctrina');
-      return;
-    }
 
     console.log('User authorized, fetching sessions');
     fetchSessions();
