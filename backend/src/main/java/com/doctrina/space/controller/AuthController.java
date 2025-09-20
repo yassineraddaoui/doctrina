@@ -1,5 +1,6 @@
 package com.doctrina.space.controller;
 
+import com.doctrina.space.dto.AccountCompleteDto;
 import com.doctrina.space.dto.InvitationRequest;
 import com.doctrina.space.dto.LoginRequest;
 import com.doctrina.space.dto.RegisterRequest;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -158,4 +160,20 @@ public class AuthController {
             return ResponseEntity.status(500).body(Map.of("error", "Verification failed: " + ex.getMessage()));
         }
     }
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> updateUser(@RequestBody AccountCompleteDto account) {
+
+        Account existingAccount = accountService.findByInvitation(account.getToken())
+                .orElse(null);
+        if (existingAccount == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "User not found"));
+        }
+        existingAccount.setFullName(account.getFullName() != null ? account.getFullName() : existingAccount.getFullName());
+        existingAccount.setPassword(passwordEncoder.encode(account.getPassword()));
+
+
+        accountService.updateAccount(existingAccount);
+        return ResponseEntity.ok(Map.of("message", "User updated successfully"));
+    }
+
 }

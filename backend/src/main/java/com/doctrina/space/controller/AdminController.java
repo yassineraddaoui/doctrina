@@ -47,11 +47,6 @@ public class AdminController {
             if (account.getRole() == null) {
                 account.setRole(RoleType.TEACHER);
             }
-
-            if (account.getPassword() != null && !account.getPassword().isEmpty()) {
-                account.setPassword(passwordEncoder.encode(account.getPassword()));
-            }
-
             accountService.createAccount(account);
             return ResponseEntity.ok(Map.of("message", "User created successfully", "email", account.getEmail()));
         } catch (Exception ex) {
@@ -68,9 +63,7 @@ public class AdminController {
         }
 
         existingAccount.setFullName(account.getFullName() != null ? account.getFullName() : existingAccount.getFullName());
-        if (account.getPassword() != null && !account.getPassword().isEmpty()) {
-            existingAccount.setPassword(passwordEncoder.encode(account.getPassword()));
-        }
+        
         if (account.getRole() != null) {
             existingAccount.setRole(account.getRole());
         }
@@ -97,6 +90,16 @@ public class AdminController {
         }
 
         accountService.banUser(existingAccount.getId()); // Use the ID
+        return ResponseEntity.ok(Map.of("message", "User deleted successfully", "email", email));
+    }
+    @PutMapping("/unban-user")
+    public ResponseEntity<?> unbanUser(@RequestParam String email) {
+        Account existingAccount = accountService.findByEmail(email).orElse(null);
+        if (existingAccount == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "User not found"));
+        }
+
+        accountService.unBanUser(existingAccount.getId()); // Use the ID
         return ResponseEntity.ok(Map.of("message", "User deleted successfully", "email", email));
     }
     @GetMapping("/users")

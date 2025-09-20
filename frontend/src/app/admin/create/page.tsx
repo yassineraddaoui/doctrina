@@ -6,12 +6,11 @@ import { useRouter } from 'next/navigation';
 interface NewUser {
   email: string;
   fullName: string;
-  password: string;
   role: string;
 }
 
 export default function CreateUserPage() {
-  const [newUser, setNewUser] = useState<NewUser>({ email: '', fullName: '', password: '', role: 'TEACHER' });
+  const [newUser, setNewUser] = useState<NewUser>({ email: '', fullName: '', role: 'TEACHER' });
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -56,16 +55,6 @@ export default function CreateUserPage() {
             type="text"
             value={newUser.fullName}
             onChange={(e) => setNewUser({ ...newUser, fullName: e.target.value })}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Password</label>
-          <input
-            type="password"
-            value={newUser.password}
-            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
             className="w-full p-2 border rounded"
             required
           />

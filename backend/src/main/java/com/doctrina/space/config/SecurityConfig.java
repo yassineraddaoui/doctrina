@@ -34,10 +34,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Use custom CORS config
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/verify").permitAll()
+                        .requestMatchers("/api/auth/login",
+                                "/api/auth/register",
+                                "/api/auth/verify").permitAll()
 
-                        .requestMatchers("/api/admin/**").permitAll() // Temporarily permit all
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/admin/**").permitAll()
+                        // Temporarily permit all
+                        .anyRequest().permitAll()
                 )
                 .headers(headers -> headers.frameOptions().sameOrigin())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
