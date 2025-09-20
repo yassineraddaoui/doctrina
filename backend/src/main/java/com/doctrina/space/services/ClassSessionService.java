@@ -70,7 +70,15 @@ public class ClassSessionService {
         return sessionRepo.save(s);
     }
 
+    @Transactional
     public void join(String authenticatedEmail, Long sessionId) {
-        
+        var student  = accountRepo.findByEmail(authenticatedEmail).orElseThrow(() -> new RuntimeException("Account not found"));
+        if (student.getRole() != RoleType.STUDENT) throw new RuntimeException("Account is not a student");
+        var session = sessionRepo.findById(sessionId).orElseThrow(() -> new RuntimeException("Session not found"));
+        Set<Account> students = session.getStudents();
+        if (students.contains(student)) throw new RuntimeException("Student already joined");
+        students.add(student);
+        session.setStudents(students);
+        sessionRepo.save(session);
     }
 }

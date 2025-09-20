@@ -2,6 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { getUserEmailFromToken } from '../utils/jwt';
+
+interface User {
+  id: number;
+  verified: number;
+  email: string;
+  fullName: string;
+  role: string;
+}
 
 interface ClassSession {
   id: string | number;
@@ -9,13 +18,18 @@ interface ClassSession {
   startedAt: string;
   durationMinutes: number;
   online: boolean;
-  roomId?: string;
+  teacher: User;
+  students: User[];
+  room: string | null;
+  isEnrolled?: boolean;
 }
 
 export default function ClassSessionsPage() {
   const [sessions, setSessions] = useState<ClassSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [joiningSession, setJoiningSession] = useState<string | number | null>(null);
+  const [userRole, setUserRole] = useState<string>('');
   const router = useRouter();
 
   useEffect(() => {
@@ -32,6 +46,7 @@ export default function ClassSessionsPage() {
       return;
     }
 
+    setUserRole(role || '');
     console.log('User authorized, fetching sessions');
     fetchSessions();
   }, [router]);
@@ -46,7 +61,24 @@ export default function ClassSessionsPage() {
       });
       if (!response.ok) throw new Error('Failed to fetch class sessions');
       const data = await response.json();
-      setSessions(Array.isArray(data) ? data : []);
+      const sessionsData = Array.isArray(data) ? data : [];
+      
+      // Get current user's email from JWT token
+      const currentUserEmail = token ? getUserEmailFromToken(token) : null;
+      
+      // Check enrollment status for each session
+      const sessionsWithEnrollment = sessionsData.map(session => {
+        const isEnrolled = currentUserEmail ? 
+          session.students.some((student: User) => student.email === currentUserEmail) : 
+          false;
+        
+        return {
+          ...session,
+          isEnrolled
+        };
+      });
+      
+      setSessions(sessionsWithEnrollment);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
@@ -56,6 +88,45 @@ export default function ClassSessionsPage() {
 
   const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString();
+  };
+
+  const handleJoinSession = async (sessionId: string | number) => {
+    setJoiningSession(sessionId);
+    setError('');
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await fetch('/api/sessions/join', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ sessionId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      // Update the session's enrollment status locally
+      setSessions(prevSessions => 
+        prevSessions.map(session => 
+          session.id === sessionId 
+            ? { ...session, isEnrolled: true }
+            : session
+        )
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to join session');
+    } finally {
+      setJoiningSession(null);
+    }
   };
 
   return (
@@ -96,8 +167,26 @@ export default function ClassSessionsPage() {
                     <p><strong>Start:</strong> {formatDateTime(session.startedAt)}</p>
                     <p><strong>Duration:</strong> {session.durationMinutes} minutes</p>
                     <p><strong>Type:</strong> {session.online ? 'Online' : 'In-person'}</p>
-                    {session.roomId && (
-                      <p><strong>Room:</strong> {session.roomId}</p>
+                    <p><strong>Teacher:</strong> {session.teacher.fullName}</p>
+                    {session.room && (
+                      <p><strong>Room:</strong> {session.room}</p>
+                    )}
+                    {userRole === 'STUDENT' && (
+                      <div className="mt-3">
+                        {session.isEnrolled ? (
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            ✓ Enrolled
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => handleJoinSession(session.id)}
+                            disabled={joiningSession === session.id}
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {joiningSession === session.id ? 'Joining...' : 'Join'}
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
