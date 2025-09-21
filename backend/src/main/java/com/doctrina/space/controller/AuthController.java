@@ -107,7 +107,7 @@ public class AuthController {
             account.setRole(RoleType.valueOf(role.toUpperCase()));
             account.setVerificationToken(verificationToken);
             account.setVerificationAt(new Date());
-            accountService.createAccount(account);
+            accountService.createAccountRegister(account);
 
             String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.toString());
             String verificationLink = "http://localhost:3000/verify?token=" + URLEncoder.encode(verificationToken, StandardCharsets.UTF_8.toString());

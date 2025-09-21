@@ -2,7 +2,6 @@ package com.doctrina.space.services;
 
 import com.doctrina.space.entity.Account;
 import com.doctrina.space.repository.AccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -27,23 +26,23 @@ public class AccountService {
 
     public Account createAccount(Account account) {
         Account savedAccount;
-        try{
+        try {
 
-        String verificationToken = UUID.randomUUID().toString();
-        account.setInvitationToken(verificationToken);
-        String encodedEmail = URLEncoder.encode(account.getEmail(), StandardCharsets.UTF_8.toString());
-        String verificationLink = "http://localhost:3000/complete?token=" + URLEncoder.encode(verificationToken, StandardCharsets.UTF_8.toString());
-        System.out.println("Generated verification link: " + verificationLink);
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(account.getEmail());
-        message.setSubject("Verify Your Doctrina Space Account");
-        message.setText("Hello,\n\nThank you for registering with Doctrina Space. Please complete your profile by " +
-                "clicking the link below:\n" + verificationLink + "\n\n" +
-                "This link is valid for 24 hours.\n\nBest regards,\nDoctrina Team");
+            String verificationToken = UUID.randomUUID().toString();
+            account.setInvitationToken(verificationToken);
+            String encodedEmail = URLEncoder.encode(account.getEmail(), StandardCharsets.UTF_8.toString());
+            String verificationLink = "http://localhost:3000/complete?token=" + URLEncoder.encode(verificationToken, StandardCharsets.UTF_8.toString());
+            System.out.println("Generated verification link: " + verificationLink);
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(account.getEmail());
+            message.setSubject("Verify Your Doctrina Space Account");
+            message.setText("Hello,\n\nThank you for registering with Doctrina Space. Please complete your profile by " +
+                    "clicking the link below:\n" + verificationLink + "\n\n" +
+                    "This link is valid for 24 hours.\n\nBest regards,\nDoctrina Team");
 
-            savedAccount  = accountRepository.save(account);
+            savedAccount = accountRepository.save(account);
 
-        mailSender.send(message);
+            mailSender.send(message);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -87,5 +86,9 @@ public class AccountService {
 
     public Optional<Account> findByInvitation(String token) {
         return accountRepository.findByInvitationToken(token);
+    }
+
+    public void createAccountRegister(Account account) {
+        accountRepository.save(account);
     }
 }

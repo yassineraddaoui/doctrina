@@ -63,7 +63,7 @@ public class AdminController {
         }
 
         existingAccount.setFullName(account.getFullName() != null ? account.getFullName() : existingAccount.getFullName());
-        
+
         if (account.getRole() != null) {
             existingAccount.setRole(account.getRole());
         }
