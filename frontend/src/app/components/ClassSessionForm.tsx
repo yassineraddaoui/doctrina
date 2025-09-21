@@ -2,6 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { PageContainer } from './layout/PageContainer';
+import { Header } from './layout/Header';
+import { Card, CardBody } from './ui/Card';
+import { Button } from './ui/Button';
+import { Input } from './ui/Input';
+import { Alert } from './ui/Alert';
 
 interface ClassSessionFormData {
   title: string;
@@ -115,78 +121,107 @@ export default function ClassSessionForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-2xl">
-        <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900">Create Class Session</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">Schedule a new class session</p>
-        </div>
+    <PageContainer maxWidth="md">
+      <Header
+        title="Create Class Session"
+        subtitle="Schedule a new class session for your students"
+        showBackButton
+        backUrl={userRole === 'ADMIN' ? '/admin' : '/doctrina'}
+      />
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                Class Title *
-              </label>
-              <input
-                id="title"
-                name="title"
-                type="text"
-                value={formData.title}
-                onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter class title"
-                required
-              />
-            </div>
+      <Card className="max-w-2xl mx-auto">
+        <CardBody className="p-8">
+          {error && (
+            <Alert type="error" className="mb-6">
+              {error}
+            </Alert>
+          )}
 
-            <div>
-              <label htmlFor="startAt" className="block text-sm font-medium text-gray-700">
-                Start Date & Time *
-              </label>
-              <input
-                id="startAt"
+          {success && (
+            <Alert type="success" className="mb-6">
+              <div>
+                <p className="font-medium mb-3">Class session created successfully!</p>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant="success"
+                    onClick={() => setSuccess(false)}
+                  >
+                    Create Another
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => router.push('/sessions')}
+                  >
+                    View All Sessions
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={handleBackToDashboard}
+                  >
+                    Back to Dashboard
+                  </Button>
+                </div>
+              </div>
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Input
+              label="Class Title"
+              name="title"
+              type="text"
+              value={formData.title}
+              onChange={handleInputChange}
+              placeholder="Enter class title"
+              required
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              }
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input
+                label="Start Date & Time"
                 name="startAt"
                 type="datetime-local"
                 value={formData.startAt}
                 onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 required
               />
-            </div>
 
-            <div>
-              <label htmlFor="durationMinutes" className="block text-sm font-medium text-gray-700">
-                Duration (minutes)
-              </label>
-              <input
-                id="durationMinutes"
+              <Input
+                label="Duration (minutes)"
                 name="durationMinutes"
                 type="number"
                 min="15"
                 max="480"
                 value={formData.durationMinutes}
                 onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                helperText="Duration between 15-480 minutes"
               />
             </div>
 
-            <div>
-              <label htmlFor="roomId" className="block text-sm font-medium text-gray-700">
-                Room ID
-              </label>
-              <input
-                id="roomId"
-                name="roomId"
-                type="text"
-                value={formData.roomId}
-                onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter room ID (optional)"
-              />
-            </div>
+            <Input
+              label="Room ID"
+              name="roomId"
+              type="text"
+              value={formData.roomId}
+              onChange={handleInputChange}
+              placeholder="Enter room ID (optional for online sessions)"
+              helperText="Required for in-person sessions"
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              }
+            />
 
-            <div className="flex items-center">
+            <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
               <input
                 id="online"
                 name="online"
@@ -195,96 +230,27 @@ export default function ClassSessionForm() {
                 onChange={handleInputChange}
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
-              <label htmlFor="online" className="ml-2 block text-sm text-gray-900">
+              <label htmlFor="online" className="text-sm font-medium text-gray-900">
                 Online session
               </label>
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
-            >
-              {loading ? (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              ) : (
-                'Create Class Session'
-              )}
-            </button>
-          </div>
-
-          {error && (
-            <div
-              className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"
-              role="alert"
-            >
-              <p>{error}</p>
-            </div>
-          )}
-
-          {success && (
-            <div
-              className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg"
-              role="alert"
-            >
-              <p>Class session created successfully!</p>
-              <div className="mt-2 flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setSuccess(false)}
-                  className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
-                >
-                  Create Another Session
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push('/sessions')}
-                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-                >
-                  View All Sessions
-                </button>
-                <button
-                  type="button"
-                  onClick={handleBackToDashboard}
-                  className="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700"
-                >
-                  Back to Dashboard
-                </button>
+              <div className="text-xs text-gray-500">
+                Check this for virtual/online sessions
               </div>
             </div>
-          )}
-        </form>
 
-        <div className="text-center">
-          <button
-            onClick={handleBackToDashboard}
-            className="text-indigo-600 hover:text-indigo-500 text-sm font-medium"
-          >
-            ← Back to Dashboard
-          </button>
-        </div>
-      </div>
-    </div>
+            <div className="pt-4">
+              <Button
+                type="submit"
+                loading={loading}
+                className="w-full"
+                size="lg"
+              >
+                {loading ? 'Creating Session...' : 'Create Class Session'}
+              </Button>
+            </div>
+          </form>
+        </CardBody>
+      </Card>
+    </PageContainer>
   );
 }
