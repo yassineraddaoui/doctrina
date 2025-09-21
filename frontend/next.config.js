@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/api/auth/:path*',
-        destination: process.env.API_URL + '/:path*', // Resolves to http://localhost:8081/api/auth/:path*
+        destination: (process.env.API_URL || 'http://localhost:8081/api/auth') + '/:path*', // Resolves to http://localhost:8081/api/auth/:path*
       },
     ];
   },

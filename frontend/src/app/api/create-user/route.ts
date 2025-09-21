@@ -9,7 +9,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/create-user`, {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
+    const response = await fetch(`${baseUrl}/admin/create-user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

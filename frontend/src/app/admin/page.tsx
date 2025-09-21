@@ -153,17 +153,6 @@ export default function AdminPage() {
           </CardBody>
         </Card>
 
-        <Card hover className="cursor-pointer" onClick={() => router.push('/sessions/create')}>
-          <CardBody className="text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-            </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Create Session</h3>
-            <p className="text-sm text-gray-600">Schedule new class sessions</p>
-          </CardBody>
-        </Card>
 
         <Card hover className="cursor-pointer" onClick={() => router.push('/sessions')}>
           <CardBody className="text-center">

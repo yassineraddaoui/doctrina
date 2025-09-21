@@ -20,7 +20,8 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/update-profile`, {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
+    const response = await fetch(`${baseUrl}/auth/update-profile`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

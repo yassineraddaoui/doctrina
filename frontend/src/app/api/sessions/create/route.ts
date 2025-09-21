@@ -15,7 +15,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions/create`, {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
+    const response = await fetch(`${baseUrl}/sessions/create`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,

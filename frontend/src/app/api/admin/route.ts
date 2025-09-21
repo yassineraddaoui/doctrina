@@ -4,7 +4,8 @@ export async function GET(request: Request) {
   try {
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
     if (!token) throw new Error('No authentication token provided');
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users`, {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
+    const response = await fetch(`${baseUrl}/admin/users`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

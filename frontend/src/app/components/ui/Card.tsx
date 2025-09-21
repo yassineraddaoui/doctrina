@@ -7,6 +7,7 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
+  onClick?: () => void;
 }
 
 interface CardHeaderProps {
@@ -27,14 +28,19 @@ interface CardFooterProps {
 export const Card: React.FC<CardProps> = ({ 
   children, 
   className, 
-  hover = false 
+  hover = false,
+  onClick
 }) => {
   return (
-    <div className={cn(
-      'card',
-      hover && 'hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
-      className
-    )}>
+    <div 
+      className={cn(
+        'card',
+        hover && 'hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+        onClick && 'cursor-pointer',
+        className
+      )}
+      onClick={onClick}
+    >
       {children}
     </div>
   );

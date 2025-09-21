@@ -13,7 +13,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions/${sessionId}/join`, {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
+    const response = await fetch(`${baseUrl}/sessions/${sessionId}/join`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,

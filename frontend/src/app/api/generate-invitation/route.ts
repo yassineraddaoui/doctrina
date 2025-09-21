@@ -9,7 +9,8 @@ export async function POST(request: Request) {
     }
 
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/generate-invitation`, {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
+        const response = await fetch(`${baseUrl}/admin/generate-invitation`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

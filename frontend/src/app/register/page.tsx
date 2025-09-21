@@ -23,7 +23,7 @@ export default function RegisterPage() {
     setMessage(null);
 
     try {
-      const response = await fetch('http://localhost:8081/api/auth/register', { // Updated to /api/auth/register
+      const response = await fetch('http://localhost:8081/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, firstName, lastName, password, role }),
@@ -45,8 +45,8 @@ export default function RegisterPage() {
         return;
       }
       console.log('Registration parsed response:', data);
-      if (response.ok) {
-        setMessage(data.message || 'Registration successful');
+      if (response.status === 200) {
+        setMessage('Registration successful . Verify your email. A verification link has been sent to ' + email);
       } else {
         setMessage(data.error || `Registration failed with status ${response.status}`);
       }
@@ -67,6 +67,13 @@ export default function RegisterPage() {
         <div className="text-center">
           <div className="mx-auto h-16 w-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-bold text-gradient mb-2">Join Doctrina Space</h1>
+          <p className="text-gray-600">Create your account to get started</p>
+        </div>
+
         <Card className="shadow-xl border-0">
           <CardBody className="p-8">
             {message && (
@@ -77,7 +84,7 @@ export default function RegisterPage() {
                 {message}
               </Alert>
             )}
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            
             <form onSubmit={handleRegister} className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <Input
@@ -97,7 +104,7 @@ export default function RegisterPage() {
                   required
                 />
               </div>
-            </svg>
+              
               <Input
                 label="Email Address"
                 type="email"
@@ -111,7 +118,7 @@ export default function RegisterPage() {
                   </svg>
                 }
               />
-          </div>
+              
               <Input
                 label="Password"
                 type="password"
@@ -126,7 +133,7 @@ export default function RegisterPage() {
                   </svg>
                 }
               />
-          <h1 className="text-3xl font-bold text-gradient mb-2">Join Doctrina Space</h1>
+              
               <div className="space-y-1">
                 <label className="form-label">
                   Role <span className="text-red-500">*</span>
@@ -141,7 +148,7 @@ export default function RegisterPage() {
                   <option value="TEACHER">Teacher</option>
                 </select>
               </div>
-          <p className="text-gray-600">Create your account to get started</p>
+              
               <Button
                 type="submit"
                 variant="primary"
@@ -151,7 +158,7 @@ export default function RegisterPage() {
                 Create Account
               </Button>
             </form>
-        </div>
+            
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Already have an account?{' '}

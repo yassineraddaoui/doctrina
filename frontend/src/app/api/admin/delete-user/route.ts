@@ -13,7 +13,8 @@ export async function DELETE(request: Request) {
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/delete-user?email=${email}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
+    const response = await fetch(`${baseUrl}/admin/delete-user?email=${email}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,

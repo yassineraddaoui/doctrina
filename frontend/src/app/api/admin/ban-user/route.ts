@@ -13,7 +13,8 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/ban-user?email=${email}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api';
+    const response = await fetch(`${baseUrl}/admin/ban-user?email=${email}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,

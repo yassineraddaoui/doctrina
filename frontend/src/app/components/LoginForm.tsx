@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ export default function LoginForm() {
     console.log('Submitting:', { email, password });
 
     try {
-      const response = await fetch('/api/admin/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -96,6 +97,17 @@ export default function LoginForm() {
               )}
             </button>
           </div>
+          <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{' '}
+                <Link 
+                  href="/register" 
+                  className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+                >
+                  Sign up here
+                </Link>
+              </p>
+            </div>
         </form>
 
         {error && (
